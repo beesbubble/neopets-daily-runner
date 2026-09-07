@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B's Neopets Daily Runner v2 Sync</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4l7.2 14.6 16.1 2.3-11.7 11.4 2.8 16-14.4-7.6-14.4 7.6 2.8-16L8.7 20.9l16.1-2.3L32 4z' fill='%23ff8a00' stroke='%23d96500' stroke-width='3' stroke-linejoin='round'/%3E%3Ccircle cx='24' cy='30' r='2.4' fill='%236b3a00'/%3E%3Ccircle cx='40' cy='30' r='2.4' fill='%236b3a00'/%3E%3Cpath d='M24 37c4.5 4 11.5 4 16 0' fill='none' stroke='%236b3a00' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='10' r='2.5' fill='%23ffd84d'/%3E%3Ccircle cx='56' cy='12' r='2.2' fill='%23ffd84d'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#fff8fc;--card:#fff;--ink:#29213b;--muted:#746d82;--pink:#ff4fa3;--blue:#3767e8;--yellow:#ffd84d;--green:#62bd73;--line:#eadfec}
+*{box-sizing:border-box} body{margin:0;font:16px system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:980px;margin:auto;padding:24px}.hero{background:linear-gradient(135deg,#3767e8,#ff4fa3);color:white;padding:24px;border-radius:24px;box-shadow:0 8px 30px #0002}
+h1{margin:0 0 5px;font-size:2rem}.hero p{margin:0;opacity:.9}.bar{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+progress{width:260px;height:16px}.pill{background:#fff3;padding:7px 11px;border-radius:999px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-top:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 4px 15px #4b34540c}
+.card h2{margin:0 0 5px;font-size:1.2rem}.desc{color:var(--muted);font-size:.9rem;margin:0 0 12px}
+.task{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px dashed #eee}.task:first-of-type{border-top:0}
+.task label{flex:1}.task small{display:block;color:var(--muted)}
+a.btn,button{border:0;border-radius:10px;padding:7px 10px;background:#eee;color:var(--ink);text-decoration:none;font-weight:650;cursor:pointer}
+a.primary{background:var(--blue);color:white}.pink{background:var(--pink)!important;color:white}.green{background:var(--green)!important;color:white}
+input[type=checkbox]{width:19px;height:19px;accent-color:var(--green)}
+textarea{width:100%;min-height:72px;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit}
+input[type=email],input[type=password]{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;margin:5px 0}.sync-status{font-size:.88rem;padding:9px 11px;border-radius:11px;background:#f4f0f5;margin-top:10px}.sync-good{background:#e8f6ec;color:#2e6d3b}.sync-warn{background:#fff5d7;color:#725c12}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.footer{color:var(--muted);font-size:.83rem;margin:18px 3px}
+.optional{opacity:.85}.snow{display:none}.snow.show{display:block}
+.device-tag{font-size:.72rem;font-weight:750;padding:3px 6px;border-radius:999px;background:#f2edf5;color:#5d5668;white-space:nowrap}
+.phone-ok .device-tag{background:#e8f6ec;color:#2e6d3b}
+.desktop-only .device-tag{background:#f4e9ef;color:#8b3a59}
+body.mobile-focus .desktop-only{opacity:.28;filter:grayscale(.8)}
+body.mobile-focus .phone-ok{outline:2px solid #62bd7355;border-radius:12px}
+.mobile-banner{display:none;background:#eaf7ed;border:1px solid #c7e8ce;padding:10px 12px;border-radius:12px;margin-top:12px;color:#31583a}
+body.mobile-focus .mobile-banner{display:block}
+@media(max-width:640px){
+ main{padding:12px}.hero{padding:18px;border-radius:18px}h1{font-size:1.55rem}
+ .grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:16px}
+ .task{align-items:flex-start;flex-wrap:wrap}.task label{min-width:155px}
+ .task a.btn{margin-left:auto}.actions{gap:6px}.actions a.btn,.actions button{flex:1 1 auto;text-align:center}
+ progress{width:100%}.bar{align-items:stretch}.pill{font-size:.82rem}
+}
+</style>
+</head>
+<body><main>
+<section class="hero">
+<h1>🌈 Neopets Daily Runner</h1><p>Version 2 • cross-device sync + mobile focus, while you do the actual Neopets actions.</p>
+<div class="actions" style="margin-top:14px"><a class="btn" style="background:white;color:#29213b" target="_blank" href="https://account.neopets.com/">🔑 NeoPass / Log In</a><button id="mobileToggle" style="background:#fff;color:#29213b">📱 Mobile focus</button></div>
+<div class="bar"><progress id="prog" value="0" max="1"></progress><span class="pill" id="count">0 / 0 core tasks</span><span class="pill" id="date"></span></div>
+</section><div class="mobile-banner">📱 Mobile focus is on. Phone-friendly tasks are highlighted; laptop-only/problematic tasks are dimmed.</div>
+<section class="card" style="margin-top:16px"><h2>☁️ Cross-device sync</h2><p class="desc">Sign in with the Daily Runner account you just created in Supabase. Use the same login on phone and laptop.</p>
+<div id="signedOutBox"><input id="syncEmail" type="email" autocomplete="username" placeholder="Email"><input id="syncPassword" type="password" autocomplete="current-password" placeholder="Password"><div class="actions"><button id="signInBtn" class="green">Sign in + sync</button></div></div>
+<div id="signedInBox" style="display:none"><div class="actions"><button id="syncNowBtn" class="green">Sync now</button><button id="signOutBtn">Sign out</button></div></div>
+<div id="syncStatus" class="sync-status sync-warn">Using local storage until you sign in.</div></section>
+<div class="grid">
+<section class="card"><h2>📜 0. Activate Quest Log</h2><p class="desc">Load this first. Don't chase leftover quests yet.</p>
+<div class="task"><input type="checkbox" data-core id="quest-start"><label for="quest-start">Today's quests activated</label><a class="btn primary" target="_blank" href="https://www.neopets.com/questlog/">Open Quest Log</a></div></section>
+
+<section class="card"><h2>⚡ 1. Refresh-state dailies</h2><p class="desc">Normally refresh your already-primed tabs. Open buttons are recovery links if a tab gets closed. These recovery tabs are intentionally opened one at a time.</p>
+<div id="direct"></div></section>
+
+<section class="card"><h2>👆 2. Fast click run</h2><p class="desc">Load → one quick action → next.</p><div class="actions"><button data-openall="clicks">Open all</button></div>
+<div id="clicks"></div></section>
+
+<section class="card"><h2>🖱️ 3. Short multi-click</h2><p class="desc">Predictable, but takes a few clicks.</p><div class="actions"><button data-openall="multi">Open all</button></div>
+<div id="multi"></div></section>
+
+<section class="card"><h2>🎡 4. Wheels & wait</h2><p class="desc">Spin/click yourself and wait for the result. Knowledge may require a respin.</p><div class="actions"><button data-openall="wheels">Open all</button></div>
+<div id="wheels"></div></section>
+
+<section class="card"><h2>🥥 5. High-value grind</h2><p class="desc">Time-consuming, but important enough to remain core.</p>
+<div class="task desktop-only"><input type="checkbox" data-core id="coconut"><label for="coconut">Coconut Shy <small>Repetitive manual clicking</small></label><span class="device-tag">💻 laptop</span><a class="btn pink" target="_blank" href="https://www.neopets.com/halloween/coconutshy.phtml">Open</a></div></section>
+
+<section class="card"><h2>📜 6. Quest cleanup</h2><p class="desc">Refresh after regular dailies → complete only leftovers → refresh and claim.</p>
+<div class="task"><input type="checkbox" data-core id="quest-check"><label for="quest-check">Pass 2: check leftovers</label><a class="btn primary" target="_blank" href="https://www.neopets.com/questlog/">Quest Log</a></div>
+<div class="actions"><button id="openQuestTools">Open all quest tools</button>
+<a class="btn quest-tool" target="_blank" href="https://www.neopets.com/halloween/wheel/index.phtml">Wheel of Misfortune</a>
+<a class="btn quest-tool" target="_blank" href="https://www.neopets.com/objects.phtml">Buy items from a Neopian shop</a>
+<a class="btn quest-tool" target="_blank" href="https://www.neopets.com/inventory.phtml">Groom / play with a pet</a>
+<a class="btn quest-tool" target="_blank" href="https://www.neopets.com/customise/">Customize a pet</a>
+<a class="btn quest-tool" target="_blank" href="https://ncmall.neopets.com/mall/shop.phtml?layout=new">Visit NC Mall</a>
+<a class="btn quest-tool" target="_blank" href="https://www.neopets.com/dome/fight.phtml">Battledome</a>
+</div>
+<div class="task"><input type="checkbox" data-core id="quest-claim"><label for="quest-claim">Pass 3: refresh + claim prizes</label><a class="btn green" target="_blank" href="https://www.neopets.com/questlog/">Claim</a></div></section>
+
+<section class="card"><h2>🍴 7. Food Club</h2><p class="desc">Shrmsh → copy Aggressive partial link → paste below → open constructed NeoFoodClub set → choose Capped and place bets manually → check winnings.</p>
+<div class="actions"><a class="btn primary" target="_blank" href="https://www.neopets.com/~Shrmsh">1. Shrmsh</a></div>
+<textarea id="fcPaste" placeholder="Paste the Aggressive NeoFoodClub partial/full link here…"></textarea>
+<div class="actions"><button id="buildFc">2. Build / Open NeoFoodClub</button><a class="btn" target="_blank" href="https://neofood.club/">Open NeoFoodClub manually</a><a class="btn green" target="_blank" href="https://www.neopets.com/pirates/foodclub.phtml?type=collect">3. Collect winnings</a></div>
+<p class="desc" id="fcMsg">The helper only constructs/opens a URL; it does not submit bets.</p>
+<div class="task"><input type="checkbox" data-core id="foodclub"><label for="foodclub">Food Club finished</label></div></section>
+
+<section class="card"><h2>📦 8. Inventory triage</h2><p class="desc">Clear enough space and process daily loot. Detailed triage rules are a v2 project.</p>
+<div class="actions"><a class="btn primary" target="_blank" href="https://www.neopets.com/inventory.phtml">Inventory</a><a class="btn green" target="_blank" href="https://www.neopets.com/quickstock.phtml">Quick Stock</a><a class="btn" target="_blank" href="https://www.neopets.com/safetydeposit.phtml">SDB</a></div>
+<div class="task"><input type="checkbox" data-core id="inventory"><label for="inventory">Inventory processed / enough space for training</label></div></section>
+
+<section class="card"><h2>🎓 9. Train Tickytina</h2><p class="desc">Choose class → note codestones → retrieve from SDB → return and Pay.</p>
+<div class="actions"><a class="btn primary" target="_blank" href="https://www.neopets.com/island/training.phtml?type=status">Training School</a><a class="btn" target="_blank" href="https://www.neopets.com/safetydeposit.phtml">SDB</a></div>
+<div class="task"><input type="checkbox" data-core id="training"><label for="training">Tickytina enrolled + paid</label></div></section>
+
+<section class="card optional"><h2>✨ Bonus / Optional</h2><p class="desc">These do not prevent the daily run from being complete.</p>
+<div class="task desktop-only"><input type="checkbox" id="bag"><label for="bag">Bagatelle <small>Very time-consuming, lower priority</small></label><span class="device-tag">💻 laptop</span><a class="btn" target="_blank" href="chrome-extension://donbcfbmhbcapadipfkeojnmajbakjdc/player.html#http://swf.neopets.com/halloween/bagatelle_v5.swf?lang=en&baseurl=www.neopets.com">Open</a></div>
+<div class="snow" id="snow"><div class="task"><input type="checkbox" id="snowcheck"><label for="snowcheck">☃️ Snowager <small id="snowNote"></small></label><a class="btn" target="_blank" href="https://www.neopets.com/winter/kiosk.phtml">Open</a></div></div>
+</section>
+
+<section class="card"><h2>🎉 Finish line</h2><p class="desc" id="finish">Complete the core checklist above.</p><div class="actions"><button id="reset">Reset today's checks</button></div></section>
+</div>
+<p class="footer"><strong>Mobile crossover status:</strong> when signed in, checkmarks sync through your Supabase account. Local storage remains as a fallback if sync is unavailable.<br><br>This runner stores checklist completion state only. It does not log into Neopets, read your account, auto-refresh pages, click site controls, submit bets, or claim rewards.</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const groups={
+direct:[
+["Deserted Tomb","https://www.neopets.com/worlds/geraptiku/process_tomb.phtml"],
+["Fishing Vortex","https://www.neopets.com/water/fishing.phtml"],
+["Tiki Tack Tombola","https://www.neopets.com/island/tombola.phtml"],
+["TDMBGPOP","https://www.neopets.com/faerieland/tdmbgpop.phtml"],
+["Healing Springs","https://www.neopets.com/faerieland/springs.phtml"]],
+clicks:[
+["Giant Omelette","https://www.neopets.com/prehistoric/omelette.phtml"],
+["Giant Jelly","https://www.neopets.com/jelly/jelly.phtml"],
+["Bank Interest","https://www.neopets.com/bank.phtml"],
+["Anchor Management","https://www.neopets.com/pirates/anchormanagement.phtml"],
+["Coltzan's Shrine","https://www.neopets.com/desert/shrine.phtml"],
+["Forgotten Shore","https://www.neopets.com/pirates/forgottenshore.phtml?confirm=1"],
+["Trudy's Surprise","https://www.neopets.com/trudys_surprise.phtml"],
+["Lab Ray","https://www.neopets.com/lab.phtml"],
+["Test Your Strength","https://www.neopets.com/halloween/strtest/index.phtml"]],
+multi:[
+["Lost in the Dark","https://www.neopets.com/games/lostinthedark/index.phtml"],
+["Grave Danger","https://www.neopets.com/halloween/gravedanger/"]],
+wheels:[
+["Wheel of Excitement","https://www.neopets.com/faerieland/wheel.phtml"],
+["Wheel of Knowledge","https://www.neopets.com/medieval/knowledge.phtml"],
+["Premium Wheel","https://www.neopets.com/premium/wheel.phtml"],
+["NC Mall Giveaway","https://ncmall.neopets.com/mall/shop.phtml?page=giveaway"]]
+};
+const desktopOnlyNames=new Set(["Lost in the Dark"]);
+const phoneLikelyNames=new Set([
+"Deserted Tomb","Fishing Vortex","Tiki Tack Tombola","TDMBGPOP","Healing Springs",
+"Giant Omelette","Giant Jelly","Bank Interest","Anchor Management","Coltzan's Shrine",
+"Forgotten Shore","Trudy's Surprise","Test Your Strength","Grave Danger",
+"Wheel of Excitement","Wheel of Knowledge","Premium Wheel","NC Mall Giveaway"
+]);
+for(const [gid,arr] of Object.entries(groups)){
+ const el=document.getElementById(gid);
+ arr.forEach((x,i)=>{
+  const id=gid+i, d=document.createElement("div");
+  const phone=phoneLikelyNames.has(x[0]) && !desktopOnlyNames.has(x[0]);
+  d.className="task "+(phone?"phone-ok":"desktop-only");
+  d.dataset.href=x[1];
+  d.innerHTML=`<input type="checkbox" data-core id="${id}"><label for="${id}">${x[0]}${x[0]=="Wheel of Knowledge"?" <small>Respin if required</small>":""}</label><span class="device-tag">${phone?"📱 phone":"💻 laptop"}</span><a class="btn" target="_blank" href="${x[1]}">Open</a>`;
+  el.appendChild(d);
+ });
+}
+const SUPABASE_URL="https://gnuxupgyclzbmztaxalp.supabase.co";
+const SUPABASE_KEY="sb_publishable_qAHPa8U48m7-4VcJDJsRXA_bZdeP9ux";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const dayKey=()=>{
+ const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+ return `${p.year}-${p.month}-${p.day}`;
+};
+const key="neo-runner-v2-"+dayKey();
+let state={}; let currentUser=null; let syncing=false;
+document.getElementById("date").textContent=new Date().toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+function normalize(raw){
+ const out={}; for(const [id,v] of Object.entries(raw||{})) out[id]=(v&&typeof v==='object'&&'checked' in v)?v:{checked:!!v,ts:0}; return out;
+}
+function merged(a,b){
+ const out={...normalize(a)}; for(const [id,v] of Object.entries(normalize(b))){if(!out[id]||v.ts>=out[id].ts) out[id]=v;} return out;
+}
+function applyState(){document.querySelectorAll('input[type="checkbox"]').forEach(x=>x.checked=!!state[x.id]?.checked);update();}
+function saveLocal(){localStorage.setItem(key,JSON.stringify(state));}
+async function pullCloud(){
+ if(!currentUser) return;
+ const {data,error}=await sb.from('daily_runner_state').select('state').eq('user_id',currentUser.id).eq('run_date',dayKey()).maybeSingle();
+ if(error){setSyncStatus('Cloud read failed — local copy is still working.',false);return;}
+ if(data?.state) state=merged(state,data.state);
+ saveLocal(); applyState();
+}
+async function pushCloud(){
+ if(!currentUser||syncing) return;
+ syncing=true;
+ try{
+  const {data,error}=await sb.from('daily_runner_state').select('state').eq('user_id',currentUser.id).eq('run_date',dayKey()).maybeSingle();
+  if(!error&&data?.state) state=merged(state,data.state);
+  const {error:upErr}=await sb.from('daily_runner_state').upsert({user_id:currentUser.id,run_date:dayKey(),state,updated_at:new Date().toISOString()},{onConflict:'user_id,run_date'});
+  if(upErr) throw upErr;
+  saveLocal();applyState();setSyncStatus('Synced ☁️',true);
+ }catch(e){setSyncStatus('Cloud sync failed — saved locally instead.',false);}finally{syncing=false;}
+}
+function setSyncStatus(msg,good){const el=document.getElementById('syncStatus');el.textContent=msg;el.className='sync-status '+(good?'sync-good':'sync-warn');}
+function save(){
+ const now=Date.now();document.querySelectorAll('input[type="checkbox"]').forEach(x=>{const prev=state[x.id];if(!prev||prev.checked!==x.checked)state[x.id]={checked:x.checked,ts:now};});
+ saveLocal();update(); if(currentUser) pushCloud();
+}
+function load(){
+ state=normalize(JSON.parse(localStorage.getItem(key)||"{}"));
+ document.querySelectorAll('input[type="checkbox"]').forEach(x=>x.addEventListener("change",save));applyState();
+}
+function update(){
+ const a=[...document.querySelectorAll("[data-core]")], n=a.filter(x=>x.checked).length;
+ prog.max=a.length; prog.value=n; count.textContent=`${n} / ${a.length} core tasks`;
+ finish.textContent=n===a.length?"✨ Core dailies complete. Optional tasks can stay undone.":"Complete the core checklist above.";
+}
+reset.onclick=async()=>{if(confirm("Clear today's checklist?")){const now=Date.now();document.querySelectorAll('input[type="checkbox"]').forEach(x=>state[x.id]={checked:false,ts:now});saveLocal();applyState();if(currentUser)await pushCloud();}};
+async function setAuthUI(session){
+ currentUser=session?.user||null;document.getElementById('signedOutBox').style.display=currentUser?'none':'block';document.getElementById('signedInBox').style.display=currentUser?'block':'none';
+ if(currentUser){setSyncStatus('Signed in — syncing today’s checklist…',true);await pullCloud();await pushCloud();}else setSyncStatus('Using local storage until you sign in.',false);
+}
+document.getElementById('signInBtn').onclick=async()=>{
+ const email=document.getElementById('syncEmail').value.trim(),password=document.getElementById('syncPassword').value;
+ if(!email||!password){setSyncStatus('Enter your email and Daily Runner password first.',false);return;}
+ setSyncStatus('Signing in…',false);const {data,error}=await sb.auth.signInWithPassword({email,password});if(error){setSyncStatus('Sign-in failed: '+error.message,false);return;}await setAuthUI(data.session);
+};
+document.getElementById('signOutBtn').onclick=async()=>{await sb.auth.signOut();await setAuthUI(null)};
+document.getElementById('syncNowBtn').onclick=async()=>{await pullCloud();await pushCloud()};
+sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'||event==='SIGNED_OUT')setTimeout(()=>setAuthUI(session),0)});
+const now=new Date(), dec=now.getMonth()===11, hour=now.getHours();
+if(dec || hour===9){snow.classList.add("show");snowNote.textContent=dec?"December: available with normal dailies.":"Your usual 9–10 AM opportunity window."}
+buildFc.onclick=()=>{
+ const s=fcPaste.value.trim(); if(!s){fcMsg.textContent="Paste the Aggressive link first.";return}
+ let url=s;
+ if(!/^https?:\/\//i.test(url)){
+   if(url.startsWith("#")) url="https://neofood.club/"+url;
+   else if(url.includes("round=")) url="https://neofood.club/#"+url.replace(/^.*?#?/,"");
+   else {fcMsg.textContent="I couldn't recognize that paste. Paste the link/fragment containing round=…";return}
+ }
+ try{const u=new URL(url); if(u.hostname!=="neofood.club" && !u.hostname.endsWith(".neofood.club")) throw 0;
+ window.open(url,"_blank"); fcMsg.textContent="Opened the constructed NeoFoodClub link. Choose Capped and place bets manually."}
+ catch(e){fcMsg.textContent="That doesn't look like a neofood.club link/fragment."}
+};
+
+const mobileToggle=document.getElementById("mobileToggle");
+function setMobileFocus(on){
+ document.body.classList.toggle("mobile-focus",on);
+ localStorage.setItem("neo-mobile-focus",on?"1":"0");
+ mobileToggle.textContent=on?"💻 Show all tasks":"📱 Mobile focus";
+}
+const autoMobile=window.matchMedia("(max-width: 700px)").matches;
+setMobileFocus(localStorage.getItem("neo-mobile-focus")!==null ? localStorage.getItem("neo-mobile-focus")==="1" : autoMobile);
+mobileToggle.onclick=()=>setMobileFocus(!document.body.classList.contains("mobile-focus"));
+
+document.querySelectorAll("[data-openall]").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+   const gid=btn.dataset.openall;
+   const links=[...document.querySelectorAll(`#${gid} .task`)].map(x=>x.dataset.href).filter(Boolean);
+   links.forEach((u,i)=>setTimeout(()=>window.open(u,"_blank"),i*120));
+ });
+});
+const oq=document.getElementById("openQuestTools");
+if(oq) oq.onclick=()=>[...document.querySelectorAll(".quest-tool")].forEach((a,i)=>setTimeout(()=>window.open(a.href,"_blank"),i*120));
+
+load();
+sb.auth.getSession().then(({data})=>setAuthUI(data.session));
+</script></body></html>
