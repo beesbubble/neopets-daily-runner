@@ -3,38 +3,109 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>B's Neopets Daily Runner v2 Sync</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4l7.2 14.6 16.1 2.3-11.7 11.4 2.8 16-14.4-7.6-14.4 7.6 2.8-16L8.7 20.9l16.1-2.3L32 4z' fill='%23ff8a00' stroke='%23d96500' stroke-width='3' stroke-linejoin='round'/%3E%3Ccircle cx='24' cy='30' r='2.4' fill='%236b3a00'/%3E%3Ccircle cx='40' cy='30' r='2.4' fill='%236b3a00'/%3E%3Cpath d='M24 37c4.5 4 11.5 4 16 0' fill='none' stroke='%236b3a00' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='10' r='2.5' fill='%23ffd84d'/%3E%3Ccircle cx='56' cy='12' r='2.2' fill='%23ffd84d'/%3E%3C/svg%3E">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <style>
-:root{--bg:#fff8fc;--card:#fff;--ink:#29213b;--muted:#746d82;--pink:#ff4fa3;--blue:#3767e8;--yellow:#ffd84d;--green:#62bd73;--line:#eadfec}
-*{box-sizing:border-box} body{margin:0;font:16px system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
-main{max-width:980px;margin:auto;padding:24px}.hero{background:linear-gradient(135deg,#3767e8,#ff4fa3);color:white;padding:24px;border-radius:24px;box-shadow:0 8px 30px #0002}
-h1{margin:0 0 5px;font-size:2rem}.hero p{margin:0;opacity:.9}.bar{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
-progress{width:260px;height:16px}.pill{background:#fff3;padding:7px 11px;border-radius:999px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-top:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 4px 15px #4b34540c}
-.card h2{margin:0 0 5px;font-size:1.2rem}.desc{color:var(--muted);font-size:.9rem;margin:0 0 12px}
-.task{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px dashed #eee}.task:first-of-type{border-top:0}
-.task label{flex:1}.task small{display:block;color:var(--muted)}
-a.btn,button{border:0;border-radius:10px;padding:7px 10px;background:#eee;color:var(--ink);text-decoration:none;font-weight:650;cursor:pointer}
-a.primary{background:var(--blue);color:white}.pink{background:var(--pink)!important;color:white}.green{background:var(--green)!important;color:white}
-input[type=checkbox]{width:19px;height:19px;accent-color:var(--green)}
-textarea{width:100%;min-height:72px;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit}
-input[type=email],input[type=password]{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;margin:5px 0}.sync-status{font-size:.88rem;padding:9px 11px;border-radius:11px;background:#f4f0f5;margin-top:10px}.sync-good{background:#e8f6ec;color:#2e6d3b}.sync-warn{background:#fff5d7;color:#725c12}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.footer{color:var(--muted);font-size:.83rem;margin:18px 3px}
-.optional{opacity:.85}.snow{display:none}.snow.show{display:block}
-.device-tag{font-size:.72rem;font-weight:750;padding:3px 6px;border-radius:999px;background:#f2edf5;color:#5d5668;white-space:nowrap}
-.phone-ok .device-tag{background:#e8f6ec;color:#2e6d3b}
-.desktop-only .device-tag{background:#f4e9ef;color:#8b3a59}
-body.mobile-focus .desktop-only{opacity:.28;filter:grayscale(.8)}
-body.mobile-focus .phone-ok{outline:2px solid #62bd7355;border-radius:12px}
-.mobile-banner{display:none;background:#eaf7ed;border:1px solid #c7e8ce;padding:10px 12px;border-radius:12px;margin-top:12px;color:#31583a}
+:root{
+  --paper:#fffef8;--cream:#fff6cf;--ink:#171717;--muted:#66615a;
+  --yellow:#ffd61f;--yellow2:#ffea70;--blue:#4ca9ee;--blue2:#d8efff;
+  --green:#83cf76;--pink:#f69bd9;--orange:#ffad63;--purple:#c8a1f3;
+  --line:#202020;--softline:#d5cfbf;--link:#084fc0;
+}
+*{box-sizing:border-box}
+html{background:#efe8d6}
+body{
+  margin:0;
+  font:16px/1.35 "Trebuchet MS",Verdana,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 10%,#fff8 0 2px,transparent 3px),
+    radial-gradient(circle at 80% 18%,#fff8 0 2px,transparent 3px),
+    linear-gradient(#f5efe1,#efe8d6);
+  color:var(--ink)
+}
+main{
+  max-width:980px;margin:18px auto;padding:14px 16px 24px;
+  background:var(--paper);border:3px solid #222;border-radius:12px;
+  box-shadow:0 5px 0 #bdb4a2,0 10px 24px #0002;
+}
+.hero{
+  position:relative;overflow:hidden;
+  color:#111;padding:22px 24px 18px;border:3px solid #181818;border-radius:10px;
+  background-color:var(--yellow);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='60' viewBox='0 0 90 60'%3E%3Cg fill='none' stroke='%23fff6a5' stroke-width='2' opacity='.7'%3E%3Cpath d='M16 7l3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z'/%3E%3Cpath d='M67 28l2 5 6 1-4 4 1 6-5-3-5 3 1-6-4-4 6-1z'/%3E%3Cpath d='M43 9l1.6 3.5 3.8.5-2.7 2.7.6 3.8-3.3-1.9-3.4 1.9.7-3.8-2.8-2.7 3.8-.5z'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(#ffdd2f,#ffc914);
+  box-shadow:inset 0 2px #fff8,0 3px 0 #cab12e;
+}
+.hero:after{
+  content:"";position:absolute;right:14px;top:10px;width:170px;height:74px;opacity:.2;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 74'%3E%3Cg fill='%23fff'%3E%3Cpath d='M12 52c4-13 18-18 29-11 6-16 31-19 41-3 10-8 28-4 31 9 14-7 33 4 35 19H9c-4-5-3-10 3-14z'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+}
+h1{
+  position:relative;z-index:1;margin:0 0 4px;font-size:2.05rem;line-height:1;
+  font-family:"Arial Rounded MT Bold","Arial Black","Trebuchet MS",sans-serif;font-weight:900;letter-spacing:-1.5px;color:#fff;
+  text-shadow:-2px -2px 0 #111,2px -2px 0 #111,-2px 2px 0 #111,2px 2px 0 #111,0 3px 0 #111;
+}
+.hero p{position:relative;z-index:1;margin:0;color:#3a3000;font-weight:700;max-width:720px}
+.bar{position:relative;z-index:1;display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+progress{width:260px;height:17px;accent-color:#72bd61;border:1px solid #333;background:white}
+.pill{background:#fffbe0;border:2px solid #6f631d;padding:5px 9px;border-radius:7px;font-weight:800;box-shadow:inset 0 1px #fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-top:14px}
+.card{
+  --head:#a8d9fb;
+  background:#fff;border:2px solid #1f1f1f;border-radius:10px;padding:16px;
+  box-shadow:3px 3px 0 #d7d0c1;
+  overflow:hidden
+}
+.grid>.card:nth-child(6n+1){--head:#a8d9fb}.grid>.card:nth-child(6n+2){--head:#a6dda0}.grid>.card:nth-child(6n+3){--head:#f3a6d9}
+.grid>.card:nth-child(6n+4){--head:#ffbd7a}.grid>.card:nth-child(6n+5){--head:#d0acf5}.grid>.card:nth-child(6n+6){--head:#ffe26a}
+.card h2{
+  margin:-16px -16px 10px;padding:9px 12px 8px;
+  font-family:"Comic Sans MS","Trebuchet MS",cursive;font-size:1.18rem;font-weight:900;letter-spacing:-.2px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='36'%3E%3Cg fill='none' stroke='%23ffffff' opacity='.35'%3E%3Cpath d='M12 6l2 5 6 1-4 4 1 6-5-3-5 3 1-6-4-4 6-1z'/%3E%3Cpath d='M60 4l1.5 3.5 4 .5-3 2.8.8 4-3.3-2-3.5 2 .8-4-3-2.8 4-.5z'/%3E%3C/g%3E%3C/svg%3E"),var(--head);
+  border-bottom:2px solid #222;color:#121212;
+  text-shadow:0 1px #fff8
+}
+.desc{color:var(--muted);font-size:.9rem;margin:0 0 10px}
+.task{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px dotted #b9b3a8}.task:first-of-type{border-top:0}
+.task label{flex:1;color:#10275f}.task label>small,.task small{display:block;color:#77716a;font-size:.78rem}
+a.btn,button{
+  appearance:none;border:2px solid #444;border-radius:5px;padding:6px 9px;
+  background:linear-gradient(#fff,#ddd);color:#151515;text-decoration:none;font-weight:900;
+  font-family:inherit;font-size:.88rem;cursor:pointer;box-shadow:inset 0 1px #fff,0 1px 0 #999;
+}
+a.btn:hover,button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+a.primary{background:linear-gradient(#80c8fa,#3e9be2);color:#062f69;border-color:#15598e}
+.pink{background:linear-gradient(#ffc7ea,#ee83c8)!important;color:#5b1746!important;border-color:#9c4c82!important}
+.green{background:linear-gradient(#b5e8aa,#75c86e)!important;color:#174d1a!important;border-color:#4f8f4c!important}
+input[type=checkbox]{width:19px;height:19px;accent-color:#4f9fdc;border-radius:0}
+textarea,input[type=email],input[type=password]{
+  width:100%;border:2px solid #8e887d;border-radius:4px;padding:9px;font:inherit;background:#fffdf1;color:#222;
+  box-shadow:inset 1px 1px 2px #0001
+}
+textarea{min-height:72px} input[type=email],input[type=password]{margin:5px 0}
+.sync-status{font-size:.88rem;padding:8px 10px;border:2px solid #928b7e;border-radius:5px;background:#f4f0e6;margin-top:10px;font-weight:700}
+.sync-good{background:#e5f5df;color:#215d2b;border-color:#6eaa66}.sync-warn{background:#fff3c1;color:#6c570d;border-color:#d2b83e}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.footer{color:#625d56;font-size:.82rem;margin:18px 3px 2px;padding:10px;border-top:2px dotted #c7c0b2}
+.optional{opacity:.86}.snow{display:none}.snow.show{display:block}
+.device-tag{font-size:.7rem;font-weight:900;padding:3px 6px;border-radius:5px;background:#eee8df;color:#4b4742;white-space:nowrap;border:1px solid #b8b0a3}
+.phone-ok .device-tag{background:#e2f3df;color:#28572b;border-color:#9fc698}.desktop-only .device-tag{background:#f7e5ef;color:#783651;border-color:#d9a8bf}
+body.mobile-focus .desktop-only{opacity:.3;filter:grayscale(.75)}
+body.mobile-focus .phone-ok{outline:3px solid #7fc87766;border-radius:6px;background:#f8fff6}
+.mobile-banner{display:none;background:#e7f4dd;border:2px solid #6da564;padding:9px 11px;border-radius:6px;margin-top:12px;color:#2d5831;font-weight:700}
 body.mobile-focus .mobile-banner{display:block}
+/* Classic-site treatment for the sync panel without changing its position or contents */
+body>main>.card:not(.grid .card){border-color:#222;background:#fffdf1}
+/* Give plain links inside task labels/areas a classic bright-blue feel without adding any new links */
+a:not(.btn){color:var(--link);font-weight:700}
 @media(max-width:640px){
- main{padding:12px}.hero{padding:18px;border-radius:18px}h1{font-size:1.55rem}
- .grid{grid-template-columns:1fr;gap:12px}.card{padding:14px;border-radius:16px}
- .task{align-items:flex-start;flex-wrap:wrap}.task label{min-width:155px}
- .task a.btn{margin-left:auto}.actions{gap:6px}.actions a.btn,.actions button{flex:1 1 auto;text-align:center}
- progress{width:100%}.bar{align-items:stretch}.pill{font-size:.82rem}
+ body{background:#efe8d6}main{margin:0;padding:10px;border-width:0;border-radius:0;box-shadow:none}
+ .hero{padding:17px 15px;border-radius:7px}h1{font-size:1.55rem}.hero:after{width:105px;height:48px;right:4px;top:6px}
+ .grid{grid-template-columns:1fr;gap:11px}.card{padding:13px;border-radius:7px}.card h2{margin:-13px -13px 9px;padding:8px 10px}
+ .task{align-items:flex-start;flex-wrap:wrap}.task label{min-width:155px}.task a.btn{margin-left:auto}.actions{gap:6px}
+ .actions a.btn,.actions button{flex:1 1 auto;text-align:center}progress{width:100%}.bar{align-items:stretch}.pill{font-size:.8rem}
 }
 </style>
 </head>
